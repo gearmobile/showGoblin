@@ -1,15 +1,15 @@
 export default class Game {
   constructor() {
     this.gameFieldSize = 16;
-    this.prevCellIdx = 0;
-    this.currentCellIdx = 0;
+    this.currentCellIndex = 0;
+    this.nextCellIndex = 0;
   }
 
   start() {
-    const gameField = document.querySelector('.game-field');
+    const gameField = document.querySelector(".game-field");
     for (let i = 0; i < this.gameFieldSize; i += 1) {
       const newCell = `<div class='cell' id=cell${i}></div>`;
-      gameField.insertAdjacentHTML('beforeend', newCell);
+      gameField.insertAdjacentHTML("beforeend", newCell);
     }
     this.showGoblin();
   }
@@ -17,17 +17,28 @@ export default class Game {
   showGoblin() {
     setInterval(() => {
       this.setRandomIdx();
-      const prevCell = document.getElementById(`cell${this.prevCellIdx}`);
-      const currentCell = document.getElementById(`cell${this.currentCellIdx}`);
-      prevCell.innerHTML = '';
-      currentCell.innerHTML = '<img src = "./goblin.png">';
-      this.prevCellIdx = this.currentCellIdx;
+
+      const currentCell = document.getElementById(
+        `cell${this.currentCellIndex}`
+      );
+      const nextCell = document.getElementById(`cell${this.nextCellIndex}`);
+
+      currentCell.innerHTML = "";
+      nextCell.appendChild(this.generateNewImage());
+      this.currentCellIndex = this.nextCellIndex;
     }, 1000);
   }
 
   setRandomIdx() {
     do {
-      this.currentCellIdx = Math.floor(Math.random() * this.gameFieldSize);
-    } while (this.currentCellIdx === this.prevCellIdx);
+      this.nextCellIndex = Math.floor(Math.random() * this.gameFieldSize);
+    } while (this.currentCellIndex === this.nextCellIndex);
+  }
+
+  generateNewImage() {
+    const image = new Image();
+    image.src = "src/img/goblin.png";
+    image.classList.add("cell-image");
+    return image;
   }
 }
